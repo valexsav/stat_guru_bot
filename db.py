@@ -53,3 +53,30 @@ def add_stat(__cur, metric_uuid, value):
         """),
         (metric_uuid, value)
     )
+
+
+@_add_cursor_wrapper
+def get_stats(__cur, metric_uuid):
+    __cur.execute(
+        """
+            SELECT value, created_at
+            FROM stat
+            WHERE metric_uuid = %s
+            order BY created_at DESC
+        """,
+        (metric_uuid,),
+    )
+    return __cur.fetchall()
+
+
+@_add_cursor_wrapper
+def get_metric_name(__cur, metric_uuid):
+    __cur.execute(
+        """
+            SELECT name
+            FROM metric
+            WHERE uuid = %s
+        """,
+        (metric_uuid,),
+    )
+    return __cur.fetchone()[0]

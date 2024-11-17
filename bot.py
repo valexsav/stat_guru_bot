@@ -8,7 +8,9 @@ from db import (
     add_metric as add_metric_db,
     get_user_metrics as get_user_metrics_db,
     add_stat as add_stat_db,
+    get_metric_name as get_metric_name_db,
 )
+from report import generate_report
 from utils import (
     ValidationError,
     _convert_buttons_to_reply_markup,
@@ -98,6 +100,36 @@ async def add_stat(update, context):
         text="Stat added successfully.",
     )
     reset_user_data(context)
+
+
+async def request_report(update, context):
+    tg_id = update.effective_user.id
+    metrics = get_user_metrics_db(tg_id)
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text='Select metric:',
+        reply_markup=_convert_buttons_to_reply_markup([
+            [
+                (metric[1], f'get_report_{metric[0]}')
+                for metric in metrics
+            ],
+        ]),
+    )
+
+
+async def get_report(update, context):
+    metric_uuid = update.callback_query.data.replace('get_report_', '')
+    metric_name = get_metric_name_db(metric_uuid)
+
+    excel_stream = generate_report(metric_uuid, metric_name)
+
+    await context.bot.send_document(
+        chat_id=update.effective_chat.id,
+        document=excel_stream,
+        filename=f"{metric_name}.xlsx",
+        caption="Your metric report",
+    )
 
 
 async def main_message_handler(update, context):
