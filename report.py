@@ -104,6 +104,7 @@ def add_weeks_worksheet(workbook, metric_name, stats):
     })
     chart.set_x_axis({
         'name': 'Week',
+        'reverse': True,
         'name_font': {'size': 8},
         'num_font': {'size': 8},
     })
@@ -161,6 +162,7 @@ def add_months_worksheet(workbook, metric_name, stats):
     })
     chart.set_x_axis({
         'name': 'Month',
+        'reverse': True,
         'name_font': {'size': 8},
         'num_font': {'size': 8},
     })
