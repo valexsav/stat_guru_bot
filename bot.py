@@ -66,10 +66,12 @@ async def request_stat(update, context):
             ],
         ]),
     )
+    reset_user_data(context)
 
 
 async def request_stat_value(update, context):
     metric_uuid = update.callback_query.data.replace('add_stat_', '')
+    reset_user_data(context)
     context.user_data[METRIC_UUID_KEY] = metric_uuid
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
