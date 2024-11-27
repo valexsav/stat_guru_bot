@@ -1,4 +1,5 @@
 import os
+import base64
 
 from dotenv import load_dotenv
 
@@ -16,3 +17,5 @@ DB_CONNECTION = {
     'user': os.environ['DB_USER'],
     'password': os.environ['DB_PASSWORD'],
 }
+
+MASTER_KEY = base64.b64decode(os.environ['MASTER_KEY'])

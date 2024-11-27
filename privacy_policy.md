@@ -1,6 +1,6 @@
 **Privacy Policy for Stat Guru Bot**
 
-_Last updated: 17.11.2024_
+_Last updated: 27.11.2024_
 
 ---
 
@@ -14,27 +14,37 @@ All data processed by Stat Guru Bot is solely under the control of the bot's own
 
 ---
 
-### 3. **Data Sharing**
+### 3. **Data Encryption**
+To enhance security and protect user data, all collected data is stored in an encrypted format within the database. Encryption ensures that data remains protected from unauthorized access, both during storage and retrieval.
+
+---
+
+### 4. **Data Sharing**
 The bot does not share collected data with third parties. However, as all data is accessible to the bot's owner, user anonymity cannot be guaranteed. Users are advised to share only data they are comfortable disclosing to the bot owner.
 
 ---
 
-### 4. **Anonymity**
+### 5. **Anonymity**
 The bot does not guarantee user anonymity. Interaction with the bot inherently provides the bot owner access to user identifiers and shared content.
 
 ---
 
-### 5. **Data Retention**
-User data may be retained by the bot owner for the duration deemed necessary for report generation and other functionalities. The retention policy is at the sole discretion of the bot owner.
+### 6. **Data Retention**
+User data may be retained by the bot owner for the duration deemed necessary for report generation and other functionalities. The retention policy is at the sole discretion of the bot owner. Encrypted data is securely retained and deleted when no longer required.
 
 ---
 
-### 6. **User Responsibility**
+### 7. **Data Security**
+In addition to encryption, the bot employs industry-standard security practices to safeguard user data against unauthorized access and potential breaches. However, no system is entirely foolproof, and users acknowledge the inherent risks of sharing data online.
+
+---
+
+### 8. **User Responsibility**
 By using Stat Guru Bot, users acknowledge that their data is collected and processed by the bot and may be accessible to the bot's owner. Users are responsible for the content they share with the bot.
 
 ---
 
-### 7. **Contact**
+### 9. **Contact**
 For any questions or concerns regarding this Privacy Policy, please contact the bot owner directly through the communication channels provided in the bot's profile.
 
 ---

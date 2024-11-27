@@ -1,9 +1,13 @@
-import psycopg2
-from psycopg2 import sql, errors
+from decimal import Decimal
+
+from psycopg2 import sql
 
 from constants import DB_CONNECTION
 from db_connect import DBConnect
-from utils import ValidationError
+from encrypt import (
+    encrypt_data,
+    decrypt_data,
+)
 
 db = DBConnect(**DB_CONNECTION)
 
@@ -17,41 +21,41 @@ def _add_cursor_wrapper(func):
 
 
 @_add_cursor_wrapper
-def add_metric(__cur, tg_id, name):
-    try:
-        __cur.execute(
-            """
-                INSERT INTO metric (tg_id, name)
-                VALUES (%s, %s)
-            """,
-            (tg_id, name)
-        )
-    except psycopg2.errors.UniqueViolation:
-        raise ValidationError("Metric name already exists")
+def add_metric(__cur, chat_id, name):
+    __cur.execute(
+        """
+            INSERT INTO metric (chat_id, name)
+            VALUES (%s, %s)
+        """,
+        (chat_id, encrypt_data(name))
+    )
 
 
 @_add_cursor_wrapper
-def get_user_metrics(__cur, tg_id):
+def get_user_metrics(__cur, chat_id):
     __cur.execute(
         """
             SELECT uuid, name
             FROM metric
-            WHERE tg_id = %s
+            WHERE chat_id = %s
             ORDER BY name ASC
         """,
-        (tg_id,)
+        (chat_id,)
     )
-    return __cur.fetchall()
+    return tuple(
+        (row[0], decrypt_data(bytes(row[1])))
+        for row in __cur.fetchall()
+    )
 
 
 @_add_cursor_wrapper
-def add_stat(__cur, metric_uuid, value):
+def add_stat(__cur, chat_id, metric_uuid, value):
     __cur.execute(
         sql.SQL("""
             INSERT INTO stat (metric_uuid, value)
             VALUES (%s, %s)
         """),
-        (metric_uuid, value)
+        (metric_uuid, encrypt_data(str(value)))
     )
 
 
@@ -66,7 +70,10 @@ def get_stats(__cur, metric_uuid):
         """,
         (metric_uuid,),
     )
-    return __cur.fetchall()
+    return tuple(
+        (Decimal(decrypt_data(bytes(row[0]))), row[1])
+        for row in __cur.fetchall()
+    )
 
 
 @_add_cursor_wrapper
@@ -79,4 +86,4 @@ def get_metric_name(__cur, metric_uuid):
         """,
         (metric_uuid,),
     )
-    return __cur.fetchone()[0]
+    return decrypt_data(bytes(__cur.fetchone()[0]))
