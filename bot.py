@@ -1,3 +1,4 @@
+import re
 from decimal import (
     Decimal,
     ROUND_DOWN,
@@ -27,17 +28,20 @@ def reset_user_data(context):
 async def request_metric(update, context):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Please enter the name of the metric you want to add:",
+        text=(
+            "Please enter the name of the metric you want to add "
+            "(up to 20 symbols):"
+        ),
     )
     context.user_data[ADDING_METRIC_KEY] = True
 
 
 async def add_metric(update, context):
-    tg_id = update.effective_user.id
-    name = update.effective_message.text
+    chat_id = update.effective_user.id
+    name = update.effective_message.text[:20]
 
     try:
-        add_metric_db(tg_id, name)
+        add_metric_db(chat_id, name)
     except ValidationError as e:
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -53,8 +57,8 @@ async def add_metric(update, context):
 
 
 async def request_stat(update, context):
-    tg_id = update.effective_user.id
-    metrics = get_user_metrics_db(tg_id)
+    chat_id = update.effective_user.id
+    metrics = get_user_metrics_db(chat_id)
 
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
@@ -83,6 +87,17 @@ async def add_stat(update, context):
     metric_uuid = context.user_data[METRIC_UUID_KEY]
     value = update.effective_message.text
 
+    if re.match(r"^-?\d{1,7}(\.\d{2})?$", value) is None:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Please enter a number from -9 999 999.99 to 9 999 999.99.",
+        )
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Enter a correct value (dot to separate the integer and decimal parts):",
+        )
+        return
+
     try:
         value = Decimal(value).quantize(Decimal('0.01'), rounding=ROUND_DOWN)
     except InvalidOperation:
@@ -96,7 +111,7 @@ async def add_stat(update, context):
         )
         return
 
-    add_stat_db(metric_uuid, value)
+    add_stat_db(update.effective_chat.id, metric_uuid, value)
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Stat added successfully.",
@@ -105,8 +120,8 @@ async def add_stat(update, context):
 
 
 async def request_report(update, context):
-    tg_id = update.effective_user.id
-    metrics = get_user_metrics_db(tg_id)
+    chat_id = update.effective_user.id
+    metrics = get_user_metrics_db(chat_id)
 
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
