@@ -15,6 +15,7 @@ from report import generate_report
 from utils import (
     ValidationError,
     _convert_buttons_to_reply_markup,
+    split_into_pairs,
 )
 
 ADDING_METRIC_KEY = 'adding_metric'
@@ -63,12 +64,12 @@ async def request_stat(update, context):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text='Select metric:',
-        reply_markup=_convert_buttons_to_reply_markup([
-            [
+        reply_markup=_convert_buttons_to_reply_markup(
+            split_into_pairs([
                 (metric[1], f'add_stat_{metric[0]}')
                 for metric in metrics
-            ],
-        ]),
+            ]),
+        ),
     )
     reset_user_data(context)
 
@@ -126,12 +127,12 @@ async def request_report(update, context):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text='Select metric:',
-        reply_markup=_convert_buttons_to_reply_markup([
-            [
+        reply_markup=_convert_buttons_to_reply_markup(
+            split_into_pairs([
                 (metric[1], f'get_report_{metric[0]}')
                 for metric in metrics
-            ],
-        ]),
+            ]),
+        ),
     )
 
 
