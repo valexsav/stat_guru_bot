@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: stat-guru-bot-db
+    restart: always
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./initial.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - bot_network
+
+volumes:
+  pg_data: 
+    name: pg_data
+    driver: local
+
+networks:
+  bot_network:
+    name: bot_network

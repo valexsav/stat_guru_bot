@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: stat-guru-bot
+    restart: always
+    env_file: .env
+    networks:
+      - bot_network
+
+networks:
+  bot_network:
+    name: bot_network
